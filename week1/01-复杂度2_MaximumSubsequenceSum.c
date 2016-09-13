@@ -24,7 +24,7 @@ int main(void)
 	MaxSum = MaxSubsequenceSum4(a, n);
 	
 	
-	printf("%d", MaxSum);
+	//printf("%d", MaxSum);
 		
 }
 
@@ -131,9 +131,10 @@ int MaxSubsequenceSum4(const int *a, int n) //T(N) =O(N)
 	int Left, Right;
 	int MaxLeft, MaxRight;
 	
-	MaxSum = ThisSum = 0;
+	MaxSum = -1;  //按题目要求，得出MaxSum要改为-1才能继续后面的判断 
+	ThisSum = 0;
 	Left = Right = 0;
-	MaxLeft = MaxRight = 0;
+	MaxLeft = MaxRight = a[0];
 	for(i=0; i<n; i++)
 	{
 		ThisSum += a[i];
@@ -141,10 +142,10 @@ int MaxSubsequenceSum4(const int *a, int n) //T(N) =O(N)
 		if(ThisSum > MaxSum)
 		{
 			MaxSum = ThisSum;
-			MaxRight = i;
+			MaxRight = a[i];
 			if(Left!=MaxLeft)
 			{
-				MaxLeft = Left;
+				MaxLeft = a[Left];
 			}
 		}
 		else if(ThisSum < 0)
@@ -153,7 +154,16 @@ int MaxSubsequenceSum4(const int *a, int n) //T(N) =O(N)
 			Left = i+1;
 		}
 	}
-	printf("MaxLeft=%d, MaxRight=%d\n", MaxLeft, MaxRight);
+	if(MaxSum<0)   
+	{
+		MaxSum = 0; 
+		printf("%d %d %d\n", MaxSum, a[0], a[n-1]);
+	}
+	else
+	{
+		printf("%d %d %d\n", MaxSum, MaxLeft, MaxRight);	
+	}
+	
 	return MaxSum;
 }
 
