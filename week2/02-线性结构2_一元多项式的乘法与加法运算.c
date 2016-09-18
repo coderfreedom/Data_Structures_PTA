@@ -4,7 +4,12 @@
 /*
 方法1 
 */
-typedef struct Node{
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
 	int a;  //系数 
 	int b;  //指数 
 	struct Node *next;
@@ -21,11 +26,11 @@ void print(List *L);
 
 int main(void)
 {
-	List *L1=NULL;
-	List *L2=NULL;
+	List *L1 = NULL;
+	List *L2 = NULL;
 	List *multiList = NULL;
 	List *sumList = NULL;
-	
+
 	L1 = create();
 	L2 = create();
 	read(L1);
@@ -35,16 +40,16 @@ int main(void)
 	print(multiList);
 	printf("\n");
 	print(sumList);
-	 
+	return 0;
 }
 
 List *create(void)
 {
 	Node *head = NULL;
-	
+
 	head = (Node*)malloc(sizeof(Node));
 	head->next = NULL;
-	
+
 	return head;
 }
 
@@ -54,27 +59,30 @@ void read(List *L)
 	Node *rear = NULL;
 	Node *temp = NULL;
 	rear = L;
-	
+
 	scanf("%d", &n);
 	L->a = n;
 	L->b = L->a;
-	
-	
-	while(n)
+
+
+	while (n)
 	{
-		temp = (Node*)malloc(sizeof(Node));
-		
-		
+
+
 		scanf("%d%d", &a, &b);
+		temp = (Node*)malloc(sizeof(Node));
 		temp->a = a;
 		temp->b = b;
 		rear->next = temp;
 		rear = temp;
 		temp->next = NULL;
-		
+
+
+
+
 		n--;
 	}
-	
+
 }
 
 List *sum(List *L1, List *L2)
@@ -85,79 +93,95 @@ List *sum(List *L1, List *L2)
 	Node *temp = NULL;
 	head->next = NULL;
 	rear = head;
-	
+
 	L1 = L1->next;
 	L2 = L2->next;
-	while(L1 && L2)
+	while (L1 && L2)
 	{
-		if(L1->b==L2->b)
+		if (L1->b == L2->b)
 		{
-			num = L1->a+L2->a;
-			
-			if(num)
+			num = L1->a + L2->a;
+
+			if (num)
 			{
 				temp = (Node*)malloc(sizeof(Node));
 				temp->a = num;
-				temp->b = L1->b;	
+				temp->b = L1->b;
 				temp->next = NULL;
-				
+
 				rear->next = temp;
 				rear = temp;
 			}
 			L1 = L1->next;
 			L2 = L2->next;
 		}
-		else if(L1->b > L2->b)
+		else if (L1->b > L2->b)
+		{
+			if (L1->a) //改了这里加了一个判断a不为0
+			{
+				temp = (Node*)malloc(sizeof(Node));
+				temp->a = L1->a;
+				temp->b = L1->b;
+				temp->next = NULL;
+
+				rear->next = temp;
+				rear = temp;
+			}
+
+
+			L1 = L1->next;
+		}
+		else
+		{
+			if (L2->a)//改了这里加了一个判断a不为0
+			{
+				temp = (Node*)malloc(sizeof(Node));
+				temp->a = L2->a;
+				temp->b = L2->b;
+				temp->next = NULL;
+
+				rear->next = temp;
+				rear = temp;
+			}
+
+
+			L2 = L2->next;
+		}
+	}
+
+	while (L1)  //这里改了，原来是if，后来发现错了。。。应该是while
+	{
+		if (L1->a)//改了这里加了一个判断a不为0
 		{
 			temp = (Node*)malloc(sizeof(Node));
 			temp->a = L1->a;
 			temp->b = L1->b;
 			temp->next = NULL;
-			
+
 			rear->next = temp;
 			rear = temp;
-			
-			L1 = L1->next;
 		}
-		else
+
+
+		L1 = L1->next;
+	}
+	while (L2)  //这里改了，原来是if，后来发现错了。。。应该是while
+	{
+		if (L2->a)//改了这里加了一个判断a不为0
 		{
 			temp = (Node*)malloc(sizeof(Node));
 			temp->a = L2->a;
 			temp->b = L2->b;
 			temp->next = NULL;
-			
+
 			rear->next = temp;
 			rear = temp;
-			
-			L2 = L2->next;
 		}
-	}
-	
-	if(L1)
-	{
-		temp = (Node*)malloc(sizeof(Node));
-			temp->a = L1->a;
-			temp->b = L1->b;
-			temp->next = NULL;
-			
-			rear->next = temp;
-			rear = temp;
-			
-			L1 = L1->next;
-	}
-	if(L2)
-	{
-		temp = (Node*)malloc(sizeof(Node));
-		temp->a = L2->a;
-		temp->b = L2->b;
-		temp->next = NULL;
-		
-		rear->next = temp;
-		rear = temp;
-		
+
+
 		L2 = L2->next;
 	}
-	
+
 	return head;
 }
 
@@ -166,22 +190,27 @@ List *multi(List *L1, List *L2)
 	Node *head = NULL;
 	Node *temp1 = NULL;
 	Node *temp2 = NULL;
-	
+
 	//先建立一个list
 	//用L1的第一个节点与L2的每一个节点相乘（非头结点） 
 	L1 = L1->next;
-	head = m(L1, L2); 
-	
-	while(L1=L1->next)
+	head = m(L1, L2);
+	if (L1 && L2->next)
 	{
-		temp1 = head;
-		temp2 = m(L1, L2);
-		head = sum(temp1, temp2);
-		myFree(temp1);
-		myFree(temp2);
-			
-	} 
+		
+
+		while (L1 = L1->next)
+		{
+			temp1 = head;
+			temp2 = m(L1, L2);
+			head = sum(temp1, temp2);
+			myFree(temp1);
+			myFree(temp2);
+
+		}
+	}
 	
+
 	return head;
 }
 List *m(Node *cur, List *L)
@@ -191,44 +220,63 @@ List *m(Node *cur, List *L)
 	Node *rear = NULL;
 	List *head = create();
 	rear = head;
-	
-	
-	while(L=L->next)
-	{
-		b = cur->b + L->b;
-		temp = (Node*)malloc(sizeof(Node));
-		
-		temp->a = cur->a * L->a;
-		temp->b = b;
-		temp->next = NULL;
-		
-		rear->next = temp;
-		rear = temp; 
 
+	if (cur)
+	{
+		while (L = L->next)
+		{
+			/*
+			b = cur->b + L->b;
+			temp = (Node*)malloc(sizeof(Node));
+
+			temp->a = cur->a * L->a;
+			temp->b = b;
+			temp->next = NULL;
+
+			rear->next = temp;
+			rear = temp;
+			*/
+
+			if (L->a && cur->a)  //改动，加了一个判断，只有a都不为0才会进入
+			{
+				b = cur->b + L->b;
+				temp = (Node*)malloc(sizeof(Node));
+
+				temp->a = cur->a * L->a;
+				temp->b = b;
+				temp->next = NULL;
+
+				rear->next = temp;
+				rear = temp;
+			}
+
+		}
 	}
 	
+
 	return head;
 }
 void myFree(List *L)
 {
 	Node *temp = NULL;
-	while(L)
+	while (L)
 	{
 		temp = L;
 		L = L->next;
 		free(temp);
 	}
-	
+
 }
 
 void print(List *L)
 {
 	L = L->next;
-	if(L)
+	if (L)
 	{
-		while(L)
+		while (L)
 		{
-			if(L->next)   //控制输出格式 
+
+			if (L->next)   //控制输出格式 
 			{
 				printf("%d %d ", L->a, L->b);
 			}
@@ -236,14 +284,17 @@ void print(List *L)
 			{
 				printf("%d %d", L->a, L->b);
 			}
+
+
 			L = L->next;
 		}
-		
+
 	}
 	else
 	{
 		printf("0 0");
 	}
+
 }
 
 /*
