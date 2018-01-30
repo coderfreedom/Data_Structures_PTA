@@ -9,6 +9,7 @@ int main(void)
 	int i, n, MaxSum;
 	int *a=NULL;
 	
+	
 	//read datas
 	scanf("%d", &n);
 	a = (int*)malloc(sizeof(int)*n);
